@@ -173,18 +173,26 @@ export interface SurveyResponse {
   submittedAt: string;
 }
 
+export type DomainEventType =
+  | 'commerce.order.completed'
+  | 'commerce.checkout.created'
+  | 'commerce.checkout.stalled'
+  | 'commerce.checkout.recovered'
+  | 'commerce.intent.created'
+  | 'commerce.intent.fulfilled'
+  | 'inventory.replenished'
+  | 'inventory.updated'
+  | 'commerce.survey.submitted'
+  | 'commerce.assistant.consulted'
+  | 'commerce.assistant.escalated'
+  | 'assistant.consultation.completed'
+  | 'assistant.escalation.created'
+  | 'assistant.human_escalation.dispatched'
+  | string;
+
 export interface DomainEvent<T = Record<string, any>> {
   eventId: string;
-  eventType:
-    | 'commerce.order.completed'
-    | 'commerce.checkout.created'
-    | 'commerce.checkout.stalled'
-    | 'commerce.checkout.recovered'
-    | 'commerce.intent.created'
-    | 'commerce.intent.fulfilled'
-    | 'inventory.replenished'
-    | 'inventory.updated'
-    | 'commerce.survey.submitted';
+  eventType: DomainEventType;
   timestamp: string;
   payload: T;
 }

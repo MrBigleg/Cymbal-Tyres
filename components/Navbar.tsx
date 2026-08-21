@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCommerce } from './CommerceContext';
 import { StoreSelectorModal } from './StoreSelectorModal';
+import { BuyingAssistantModal } from './BuyingAssistantModal';
 import {
   ShoppingCart,
   Sliders,
   ChevronDown,
   Search,
+  Sparkles,
 } from 'lucide-react';
 
 export function Navbar() {
@@ -17,6 +19,7 @@ export function Navbar() {
   const router = useRouter();
   const { selectedStore, cart } = useCommerce();
   const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const cartItemCount = cart.items.reduce((acc, i) => acc + i.quantity, 0);
@@ -80,10 +83,19 @@ export function Navbar() {
         </div>
 
         {/* Right Navigation & Cart */}
-        <div className="flex items-center space-x-4 sm:space-x-6">
+        <div className="flex items-center space-x-3 sm:space-x-5">
+          <button
+            onClick={() => setIsAssistantOpen(true)}
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold shadow-sm transition-all active:scale-95"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span className="hidden sm:inline">AI Buying Assistant</span>
+            <span className="sm:hidden">AI Assist</span>
+          </button>
+
           <Link
             href="/shop"
-            className="text-sm font-medium hover:text-blue-400 transition-colors hidden sm:inline"
+            className="text-sm font-medium hover:text-blue-400 transition-colors hidden md:inline"
           >
             Book Fitting
           </Link>
@@ -174,6 +186,12 @@ export function Navbar() {
       <StoreSelectorModal
         isOpen={isStoreModalOpen}
         onClose={() => setIsStoreModalOpen(false)}
+      />
+
+      {/* Gemini Grounded Buying Assistant Modal */}
+      <BuyingAssistantModal
+        isOpen={isAssistantOpen}
+        onClose={() => setIsAssistantOpen(false)}
       />
     </>
   );

@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useCommerce } from '@/components/CommerceContext';
 import { ProductCard } from '@/components/ProductCard';
 import { StoreSelectorModal } from '@/components/StoreSelectorModal';
+import { BuyingAssistantModal } from '@/components/BuyingAssistantModal';
 import {
   Search,
   Filter,
@@ -15,6 +16,9 @@ import {
   RotateCcw,
   CheckCircle2,
   X,
+  Bot,
+  UserCheck,
+  ArrowRight,
 } from 'lucide-react';
 
 function ShopContent() {
@@ -31,6 +35,8 @@ function ShopContent() {
   const [vehicleTypeFilter, setVehicleTypeFilter] = useState<string>('ALL');
   const [sortBy, setSortBy] = useState<'featured' | 'price_asc' | 'price_desc' | 'brand'>('featured');
   const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+  const [assistantInitialQuery, setAssistantInitialQuery] = useState('');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const brands = useMemo(() => {
@@ -128,6 +134,28 @@ function ShopContent() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
         {/* Filters Sidebar (Desktop) */}
         <aside className="hidden lg:block bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-6 shadow-xs sticky top-24">
+          {/* AI Buying Assistant Quick Launcher Card */}
+          <div className="rounded-xl bg-gradient-to-br from-slate-900 to-blue-950 p-4 text-white border border-blue-600/40 space-y-2.5 shadow-md">
+            <div className="flex items-center gap-2 text-xs font-bold text-blue-300">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>AI Buying Assistant</span>
+            </div>
+            <p className="text-[11px] text-slate-300 leading-tight">
+              100% web-grounded advice with plain English test comparisons.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setAssistantInitialQuery(searchQuery || '');
+                setIsAssistantOpen(true);
+              }}
+              className="w-full py-2 px-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
+            >
+              <span>Ask Specialist AI</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
+          </div>
+
           <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2 font-bold text-sm text-slate-900 dark:text-white">
               <Filter className="w-4 h-4 text-blue-600" />
@@ -364,6 +392,13 @@ function ShopContent() {
       <StoreSelectorModal
         isOpen={isStoreModalOpen}
         onClose={() => setIsStoreModalOpen(false)}
+      />
+
+      {/* Buying Assistant Modal */}
+      <BuyingAssistantModal
+        isOpen={isAssistantOpen}
+        onClose={() => setIsAssistantOpen(false)}
+        initialQuery={assistantInitialQuery}
       />
     </div>
   );

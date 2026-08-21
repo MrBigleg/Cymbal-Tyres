@@ -29,6 +29,9 @@ import {
   Plus,
   Play,
   Zap,
+  UserCheck,
+  PhoneCall,
+  ShieldCheck,
 } from 'lucide-react';
 
 export default function DemoControlsPage() {
@@ -53,7 +56,10 @@ export default function DemoControlsPage() {
   const [surveys, setSurveys] = useState<SurveyResponse[]>([]);
   const [copiedEventId, setCopiedEventId] = useState<string | null>(null);
   const [isResetting, setIsResetting] = useState(false);
-  const [activeTab, setActiveTab] = useState<'inventory' | 'checkout' | 'orders' | 'intents' | 'survey' | 'events'>('inventory');
+  const [activeTab, setActiveTab] = useState<'inventory' | 'checkout' | 'intents' | 'orders' | 'survey' | 'assistant' | 'events'>('inventory');
+  const [simAssistantQuery, setSimAssistantQuery] = useState('BMW 3 Series staggered rear axle 255/40 R18 vs 225/45 R18 front fitment check');
+  const [simResult, setSimResult] = useState<any | null>(null);
+  const [isSimulatingAssistant, setIsSimulatingAssistant] = useState(false);
 
   const loadAllData = useCallback(async () => {
     try {
@@ -286,7 +292,8 @@ export default function DemoControlsPage() {
           { id: 'intents', label: '3. Out-of-Stock Intents', icon: Zap, badge: intents.length },
           { id: 'orders', label: '4. Orders', icon: CheckCircle2, badge: orders.length },
           { id: 'survey', label: '5. Post-Purchase Survey', icon: HeartHandshake, badge: surveys.length },
-          { id: 'events', label: '6. Domain Event Bus', icon: Activity, badge: recentEvents.length },
+          { id: 'assistant', label: '6. Grounding Assistant & HITL', icon: Sparkles, badge: null },
+          { id: 'events', label: '7. Domain Event Bus', icon: Activity, badge: recentEvents.length },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -877,7 +884,172 @@ export default function DemoControlsPage() {
         </div>
       )}
 
-      {/* TAB 6: DOMAIN EVENT BUS */}
+      {/* TAB 6: GEMINI GROUNDING BUYING ASSISTANT & HITL */}
+      {activeTab === 'assistant' && (
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 space-y-6 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-5 border-slate-100 dark:border-slate-800">
+            <div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <h2 className="font-extrabold text-base text-slate-900 dark:text-white">
+                  Gemini Grounding Engine & Human-In-The-Loop (HITL) Inspector
+                </h2>
+              </div>
+              <p className="text-xs text-slate-500 mt-1">
+                Test web search grounding, 100% confidence thresholds, and automatic technician escalation triggers.
+              </p>
+            </div>
+
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold border border-emerald-200 dark:border-emerald-800">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span>Strict 100% Grounding Rule Enforced</span>
+            </div>
+          </div>
+
+          {/* Test Workbench */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-6 space-y-4">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Simulate Driver Query / Edge Case
+              </label>
+
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  value={simAssistantQuery}
+                  onChange={(e) => setSimAssistantQuery(e.target.value)}
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
+                />
+
+                <div className="flex flex-wrap gap-1.5 text-[11px]">
+                  <span className="font-semibold text-slate-400 py-0.5">Presets:</span>
+                  <button
+                    onClick={() => setSimAssistantQuery('Which tyre is safest in wet UK roundabouts for a Ford Focus?')}
+                    className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-blue-50 hover:text-blue-700"
+                  >
+                    100% Grounded Test
+                  </button>
+                  <button
+                    onClick={() => setSimAssistantQuery('BMW 330e M-Sport with staggered rear axle 255/40 R18 vs 225/45 R18 front fitment check')}
+                    className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100"
+                  >
+                    Trigger HITL Deferral Test
+                  </button>
+                  <button
+                    onClick={() => setSimAssistantQuery('Tesla Model 3 Highland EV tyre low noise and max range')}
+                    className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-blue-50 hover:text-blue-700"
+                  >
+                    EV Range Test
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                disabled={isSimulatingAssistant}
+                onClick={async () => {
+                  setIsSimulatingAssistant(true);
+                  try {
+                    const res = await fetch('/api/assistant/consult', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        query: simAssistantQuery,
+                        selectedStoreId: invStoreId,
+                        drivingProfile: 'Performance & Safety',
+                        requireStrictGrounding: true,
+                      }),
+                    });
+                    const json = await res.json();
+                    setSimResult(json.data);
+                    await refreshData();
+                    showNotification({
+                      type: json.data?.humanInTheLoop?.required ? 'warning' : 'success',
+                      title: json.data?.humanInTheLoop?.required ? 'HITL Deferral Triggered' : '100% Grounded Recommendation',
+                      message: `Confidence: ${json.data?.confidenceScore}%. Action: ${json.data?.suggestedNextAction}`,
+                    });
+                  } catch (e: any) {
+                    alert('Error: ' + e.message);
+                  } finally {
+                    setIsSimulatingAssistant(false);
+                  }
+                }}
+                className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-xs"
+              >
+                {isSimulatingAssistant ? (
+                  <span>Running Grounding & Search Evaluation...</span>
+                ) : (
+                  <>
+                    <Play className="w-3.5 h-3.5" />
+                    <span>Run Grounded Evaluation Engine</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Simulated Response Inspector */}
+            <div className="lg:col-span-6 bg-slate-950 text-white rounded-2xl p-5 border border-slate-800 font-mono text-xs space-y-3 overflow-hidden">
+              <div className="flex items-center justify-between text-slate-400 border-b border-slate-800 pb-2">
+                <span className="font-bold text-[11px] uppercase">Engine Evaluation Output</span>
+                {simResult && (
+                  <span
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                      simResult.isFullyGrounded && simResult.confidenceScore === 100
+                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                    }`}
+                  >
+                    Confidence: {simResult.confidenceScore}% • {simResult.isFullyGrounded ? '100% Grounded' : 'HITL Engaged'}
+                  </span>
+                )}
+              </div>
+
+              {simResult ? (
+                <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+                  <div className="text-slate-300">
+                    <strong className="text-white block text-[11px]">Plain English Summary:</strong>
+                    <p className="mt-0.5 text-[11px] leading-relaxed text-slate-300">
+                      {simResult.plainEnglishSummary || simResult.groundedAnswer?.slice(0, 160) + '...'}
+                    </p>
+                  </div>
+
+                  {simResult.humanInTheLoop?.required && (
+                    <div className="p-3 rounded-lg bg-amber-950/60 border border-amber-600/40 text-amber-200 space-y-1">
+                      <div className="font-bold flex items-center gap-1.5 text-[11px]">
+                        <UserCheck className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Human-in-the-Loop Referral Assigned</span>
+                      </div>
+                      <p className="text-[10px] text-amber-300">{simResult.humanInTheLoop.reason}</p>
+                      <div className="text-[10px] text-amber-400 pt-1 font-semibold">
+                        Assigned To: {simResult.humanInTheLoop.technicianAssigned} (Ticket: {simResult.humanInTheLoop.ticketId})
+                      </div>
+                    </div>
+                  )}
+
+                  {simResult.groundingSources && simResult.groundingSources.length > 0 && (
+                    <div className="pt-2 border-t border-slate-800 space-y-1">
+                      <strong className="text-slate-400 block text-[10px] uppercase">Grounded Web Citations:</strong>
+                      {simResult.groundingSources.map((s: any, idx: number) => (
+                        <div key={idx} className="text-[10px] text-blue-400 truncate">
+                          • {s.title} ({s.uri})
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="p-8 text-center text-slate-500 text-xs font-sans">
+                  Click &ldquo;Run Grounded Evaluation Engine&rdquo; to test web grounding confidence scoring and human deferral logic.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 7: DOMAIN EVENT BUS */}
       {activeTab === 'events' && (
         <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 space-y-6 shadow-xs">
           <div className="flex items-center justify-between">

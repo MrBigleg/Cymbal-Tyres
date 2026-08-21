@@ -107,6 +107,54 @@ export const cymbalAgentToolDeclarations: FunctionDeclaration[] = [
       required: ['checkoutId', 'discountPercent', 'recoveryMessage'],
     },
   },
+  {
+    name: 'evaluateTyreSuitabilityGrounded',
+    description: 'Evaluates customer vehicle fitment and driving conditions against live web test sources with strict 100% grounding. If ambiguous, triggers human technician referral.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        query: {
+          type: Type.STRING,
+          description: 'Driver question or vehicle requirement',
+        },
+        vehicleRegOrModel: {
+          type: Type.STRING,
+          description: 'Optional vehicle model or VRN',
+        },
+        selectedStoreId: {
+          type: Type.STRING,
+          description: 'Local fitting autocentre ID',
+        },
+      },
+      required: ['query'],
+    },
+  },
+  {
+    name: 'escalateToHumanTechnician',
+    description: 'Creates a priority human-in-the-loop escalation ticket for a Master Technician when confidence is under 100% or staggered fitment requires verification.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        reason: {
+          type: Type.STRING,
+          description: 'Reason for technician deferral',
+        },
+        customerName: {
+          type: Type.STRING,
+          description: 'Customer name',
+        },
+        customerPhone: {
+          type: Type.STRING,
+          description: 'Customer telephone',
+        },
+        preferredDepot: {
+          type: Type.STRING,
+          description: 'Depot store ID',
+        },
+      },
+      required: ['reason', 'preferredDepot'],
+    },
+  },
 ];
 
 /**
@@ -160,6 +208,25 @@ export class CymbalAgentToolDispatcher {
           discountPercent,
           recoveryMessage
         );
+      }
+
+      case 'evaluateTyreSuitabilityGrounded': {
+        const { query, selectedStoreId } = args;
+        const res = await fetch('/api/assistant/consult', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, selectedStoreId, requireStrictGrounding: true }),
+        });
+        return await res.json();
+      }
+
+      case 'escalateToHumanTechnician': {
+        const res = await fetch('/api/assistant/escalate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(args),
+        });
+        return await res.json();
       }
 
       default:

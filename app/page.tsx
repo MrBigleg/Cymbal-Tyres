@@ -1,11 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCommerce } from '@/components/CommerceContext';
 import { ProductCard } from '@/components/ProductCard';
 import { TyreSearchWidget } from '@/components/TyreSearchWidget';
+import { BuyingAssistantModal } from '@/components/BuyingAssistantModal';
 import {
   ShieldCheck,
   Wrench,
@@ -17,10 +18,20 @@ import {
   Sliders,
   Star,
   Zap,
+  Bot,
+  UserCheck,
+  Search,
 } from 'lucide-react';
 
 export default function HomePage() {
   const { products, selectedStore } = useCommerce();
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+  const [assistantQuery, setAssistantQuery] = useState('');
+
+  const launchAssistant = (q: string = '') => {
+    setAssistantQuery(q);
+    setIsAssistantOpen(true);
+  };
 
   return (
     <div className="space-y-16 pb-12">
@@ -111,6 +122,72 @@ export default function HomePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <TyreSearchWidget />
       </div>
+
+      {/* Gemini Grounding User Buying Assistant Banner */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="rounded-3xl bg-linear-to-r from-slate-900 via-blue-950 to-slate-900 border border-blue-500/30 p-6 sm:p-8 shadow-xl text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
+            <div className="lg:col-span-8 space-y-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold border border-blue-400/30">
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span>Gemini Web-Grounded Buying Assistant • 100% Verified Policy</span>
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+                Not sure which tyre is best for your driving style?
+              </h2>
+
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl">
+                Our AI Buying Assistant searches live web test data (Tyre Reviews UK, Auto Express, ADAC) and translates wet braking, acoustic noise, and tread life into <strong>plain English</strong>. Suggestions must be <strong>100% grounded</strong>; if any vehicle fitment ambiguity is detected, it automatically defers to our Senior Master Technician at {selectedStore.name}.
+              </p>
+
+              {/* Quick sample prompt pills */}
+              <div className="pt-2 flex flex-wrap gap-2 text-xs">
+                <button
+                  type="button"
+                  onClick={() => launchAssistant('Which tyre has the shortest wet braking distance in UK winter rain?')}
+                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all flex items-center gap-1.5 font-medium"
+                >
+                  <span>🌧️ Best tyre for wet UK roads?</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => launchAssistant('I drive an EV / Tesla Model 3 — what tyre offers lowest road noise and max range?')}
+                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all flex items-center gap-1.5 font-medium"
+                >
+                  <span>⚡ Lowest noise for EV / Hybrid?</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => launchAssistant('BMW 3 Series 18-inch wheels: do I need staggered rear fitment or run-flats?')}
+                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all flex items-center gap-1.5 font-medium"
+                >
+                  <span>🛡️ BMW staggered fitment check (HITL test)</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-center">
+              <button
+                type="button"
+                onClick={() => launchAssistant()}
+                className="w-full py-3.5 px-5 rounded-2xl bg-blue-600 hover:bg-blue-500 active:scale-98 text-white font-bold text-sm shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2"
+              >
+                <Sparkles className="w-4 h-4 text-amber-300" />
+                <span>Launch AI Buying Assistant</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center justify-center gap-2 text-[11px] text-slate-400 text-center">
+                <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Backed by Master Technicians in {selectedStore.city}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Featured Products Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -227,6 +304,13 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* AI Buying Assistant Modal */}
+      <BuyingAssistantModal
+        isOpen={isAssistantOpen}
+        onClose={() => setIsAssistantOpen(false)}
+        initialQuery={assistantQuery}
+      />
     </div>
   );
 }

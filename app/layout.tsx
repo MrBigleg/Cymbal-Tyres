@@ -4,6 +4,7 @@ import { CommerceProvider } from '@/components/CommerceContext';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { NotificationToastContainer } from '@/components/NotificationToast';
+import { BuyingAssistantButton } from '@/components/BuyingAssistantButton';
 
 export const metadata: Metadata = {
   title: 'Cymbal Auto | UK Tyres, Autocentres & Mobile Fitting',
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex-1">{children}</main>
           <Footer />
           <NotificationToastContainer />
+          <BuyingAssistantButton />
         </CommerceProvider>
       </body>
     </html>

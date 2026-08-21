@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "CymbalAutoCommerceAgentTools",
+  "version": "1.0.0",
+  "description": "Tool definitions for Google ADK and Vertex AI Long Horizon Agents interacting with Cymbal Auto UCP platform.",
+  "tools": [
+    {
+      "name": "getStockLevels",
+      "description": "Retrieves the current stock state and inventory count for a given product across all depots or a specific store.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "Unique identifier of the tyre product (e.g. 'michelin-ps5-225-45r17')"
+          },
+          "storeId": {
+            "type": "string",
+            "description": "Optional store ID to filter by (e.g. 'birmingham', 'bristol', 'croydon')"
+          }
+        },
+        "required": ["productId"]
+      }
+    },
+    {
+      "name": "replenishStock",
+      "description": "Simulates or executes an inventory arrival/replenishment at an autocentre depot.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "Product ID receiving new stock"
+          },
+          "storeId": {
+            "type": "string",
+            "description": "Store ID receiving stock"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Number of tyre units to add to inventory",
+            "minimum": 1
+          }
+        },
+        "required": ["productId", "storeId", "quantity"]
+      }
+    },
+    {
+      "name": "getPendingPurchaseIntents",
+      "description": "Retrieves authorized AP2 conditional purchase intents awaiting back-in-stock fulfillment.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "Filter by product ID"
+          },
+          "storeId": {
+            "type": "string",
+            "description": "Filter by store depot ID"
+          }
+        }
+      }
+    },
+    {
+      "name": "fulfillPurchaseIntent",
+      "description": "Autonomously executes an order against an authorized AP2 conditional purchase intent once inventory requirements and price caps are met.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "intentId": {
+            "type": "string",
+            "description": "The unique ID of the purchase intent record"
+          },
+          "fulfillmentNote": {
+            "type": "string",
+            "description": "Reason or agent log for fulfillment execution"
+          }
+        },
+        "required": ["intentId"]
+      }
+    },
+    {
+      "name": "applyCheckoutRecovery",
+      "description": "Applies a targeted recovery incentive discount and customer guidance message to a stalled checkout session.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "checkoutId": {
+            "type": "string",
+            "description": "The stalled checkout session ID"
+          },
+          "discountPercent": {
+            "type": "number",
+            "description": "Percentage discount to grant (maximum allowed is 15%)",
+            "minimum": 1,
+            "maximum": 15
+          },
+          "recoveryMessage": {
+            "type": "string",
+            "description": "Personalized message explaining the recovery offer"
+          }
+        },
+        "required": ["checkoutId", "discountPercent", "recoveryMessage"]
+      }
+    },
+    {
+      "name": "getCheckoutSession",
+      "description": "Fetches the full session state, item contents, and customer details of a UCP checkout.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "checkoutId": {
+            "type": "string",
+            "description": "The unique ID of the checkout session"
+          }
+        },
+        "required": ["checkoutId"]
+      }
+    },
+    {
+      "name": "escalateSurveyDetractor",
+      "description": "Logs an escalation ticket for store management when a customer submits an NPS rating of 6 or below.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "description": "Order ID associated with the survey"
+          },
+          "rating": {
+            "type": "integer",
+            "description": "Customer NPS score (0-10)"
+          },
+          "feedback": {
+            "type": "string",
+            "description": "Customer qualitative comment"
+          },
+          "suggestedResolution": {
+            "type": "string",
+            "description": "Agent-proposed remedy (e.g. Free re-balance, manager call)"
+          }
+        },
+        "required": ["orderId", "rating", "feedback"]
+      }
+    }
+  ]
+}

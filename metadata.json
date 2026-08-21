@@ -1,0 +1,6 @@
+{
+  "name": "Cymbal Auto - Agentic Commerce Prototype",
+  "description": "Multi-location UK automotive retailer prototype with out-of-stock conditional purchase intents, abandoned checkout recovery, event stream, and demo controls for agent systems.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

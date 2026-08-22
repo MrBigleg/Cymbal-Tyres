@@ -51,7 +51,8 @@ export const SEED_PRODUCTS: Product[] = [
     noiseLevelDb: 72,
     price: 124.99,
     recommendedRetailPrice: 139.99,
-    image: 'https://picsum.photos/seed/tyre_michelin_ps5/600/600',
+    image: '/images/products/michelin-pilot-sport-5.jpg',
+    wheelPackageImage: '/images/products/package-michelin-wheel.jpg',
     shortDescription: 'Maximum control and responsive precision steering with ultra-long tread life.',
     description: 'The Michelin Pilot Sport 5 is an ultra-high performance tyre offering commanding wet braking, superior dry responsiveness, and refined acoustic comfort. Designed for enthusiastic drivers demanding agility and durability.',
     features: [
@@ -99,7 +100,8 @@ export const SEED_PRODUCTS: Product[] = [
     noiseLevelDb: 69,
     price: 89.50,
     recommendedRetailPrice: 99.00,
-    image: 'https://picsum.photos/seed/tyre_michelin_primacy/600/600',
+    image: '/images/products/michelin-primacy-4-plus.jpg',
+    wheelPackageImage: '/images/products/package-michelin-wheel.jpg',
     shortDescription: 'Outstanding longevity and safety designed to protect you from the first to the last mile.',
     description: 'The Michelin Primacy 4+ provides exceptional braking performance in wet conditions even when worn, ensuring everyday peace of mind, family safety, and best-in-class mileage.',
     features: [
@@ -146,7 +148,8 @@ export const SEED_PRODUCTS: Product[] = [
     noiseLevelDb: 70,
     price: 98.00,
     recommendedRetailPrice: 112.00,
-    image: 'https://picsum.photos/seed/tyre_goodyear_f1/600/600',
+    image: '/images/products/goodyear-eagle-f1-asymmetric-6.jpg',
+    wheelPackageImage: '/images/products/package-goodyear-wheel.jpg',
     shortDescription: 'Next-generation ultra-high performance tyre engineered for EV and high-power combustion vehicles.',
     description: 'The Goodyear Eagle F1 Asymmetric 6 delivers reassuring wet braking, adaptive contact footprint under heavy cornering loads, and low exterior noise compatible with modern electric vehicles.',
     features: [
@@ -193,7 +196,8 @@ export const SEED_PRODUCTS: Product[] = [
     noiseLevelDb: 71,
     price: 118.50,
     recommendedRetailPrice: 132.00,
-    image: 'https://picsum.photos/seed/tyre_conti_pc7/600/600',
+    image: '/images/products/continental-premiumcontact-7.jpg',
+    wheelPackageImage: '/images/products/package-goodyear-wheel.jpg',
     shortDescription: 'German engineered safety, tailored comfort, and confident control on any road surface.',
     description: 'The Continental PremiumContact 7 combines adaptive pattern dynamics with RedChili compound technology for instant grip without requiring warmup, even on cold damp UK mornings.',
     features: [
@@ -240,7 +244,8 @@ export const SEED_PRODUCTS: Product[] = [
     noiseLevelDb: 68,
     price: 84.00,
     recommendedRetailPrice: 95.00,
-    image: 'https://picsum.photos/seed/tyre_bridgestone_turanza/600/600',
+    image: '/images/products/bridgestone-turanza-6.jpg',
+    wheelPackageImage: '/images/products/package-michelin-wheel.jpg',
     shortDescription: 'Master the wet weather with superior fuel economy and extended mileage performance.',
     description: 'The Bridgestone Turanza 6 flagship touring tyre engineered using ENLITEN technology. Outstanding cornering grip in wet roundabouts and exceptional motorway serenity.',
     features: [
@@ -287,7 +292,8 @@ export const SEED_PRODUCTS: Product[] = [
     noiseLevelDb: 72,
     price: 172.00,
     recommendedRetailPrice: 195.00,
-    image: 'https://picsum.photos/seed/tyre_pirelli_pzero/600/600',
+    image: '/images/products/pirelli-pzero-pz4.jpg',
+    wheelPackageImage: '/images/products/package-pirelli-wheel.jpg',
     shortDescription: 'Motorsport-derived flagship for prestigious executive and sports performance vehicles.',
     description: 'Developed in collaboration with premier supercar manufacturers, the Pirelli P Zero PZ4 delivers razor-sharp steering feedback, extreme lateral stability, and confident high-speed braking.',
     features: [

@@ -38,6 +38,10 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   };
 
+  const [viewPackage, setViewPackage] = useState(false);
+
+  const currentImage = viewPackage && product.wheelPackageImage ? product.wheelPackageImage : product.image;
+
   return (
     <>
       <div
@@ -65,25 +69,63 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
 
-        {/* Tyre Image / Visual Container */}
-        <Link
-          href={`/product/${product.id}`}
-          className="h-28 sm:h-32 bg-slate-50 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden group/img"
-        >
-          <Image
-            src={product.image}
-            alt={product.name}
-            width={200}
-            height={200}
-            className="object-contain max-h-24 sm:max-h-28 group-hover/img:scale-105 transition-transform duration-300 drop-shadow-sm"
-            referrerPolicy="no-referrer"
-          />
-          {product.vehicleType === 'EV / Hybrid' && (
-            <span className="absolute top-2 left-2 text-[9px] font-bold px-1.5 py-0.5 bg-emerald-600 text-white rounded shadow-xs flex items-center gap-0.5">
-              <Sparkles className="w-2.5 h-2.5" /> EV
-            </span>
+        {/* Tyre Image / Visual Container with Style Toggle */}
+        <div className="relative mb-4">
+          <Link
+            href={`/product/${product.id}`}
+            className="h-44 sm:h-48 bg-slate-50/80 rounded-xl flex items-center justify-center relative overflow-hidden group/img border border-slate-100"
+          >
+            <Image
+              src={currentImage}
+              alt={product.name}
+              width={260}
+              height={260}
+              className="object-contain max-h-40 sm:max-h-44 group-hover/img:scale-105 transition-transform duration-300 drop-shadow-md"
+              referrerPolicy="no-referrer"
+            />
+            {product.vehicleType === 'EV / Hybrid' && (
+              <span className="absolute top-2 left-2 text-[9px] font-bold px-1.5 py-0.5 bg-emerald-600 text-white rounded shadow-xs flex items-center gap-0.5">
+                <Sparkles className="w-2.5 h-2.5" /> EV
+              </span>
+            )}
+          </Link>
+
+          {/* Quick toggle between Tyre only and Fitted Wheel Package */}
+          {product.wheelPackageImage && (
+            <div className="absolute bottom-2 right-2 flex bg-white/90 backdrop-blur-xs border border-slate-200 rounded-lg p-0.5 shadow-xs text-[10px] font-semibold">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setViewPackage(false);
+                }}
+                className={`px-2 py-0.5 rounded ${
+                  !viewPackage
+                    ? 'bg-slate-900 text-white shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Tyre
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setViewPackage(true);
+                }}
+                className={`px-2 py-0.5 rounded ${
+                  viewPackage
+                    ? 'bg-blue-600 text-white shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Wheel
+              </button>
+            </div>
           )}
-        </Link>
+        </div>
 
         {/* Tyre Brand & Name */}
         <div className="mb-1">

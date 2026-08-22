@@ -36,6 +36,7 @@ export interface Product {
   price: number;
   recommendedRetailPrice?: number;
   image: string;
+  wheelPackageImage?: string;
   description: string;
   shortDescription: string;
   features: string[];
